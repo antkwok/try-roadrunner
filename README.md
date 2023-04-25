@@ -1,66 +1,73 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Web Api BFF
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## For Docker Development Environment
+```bash
+# cp the example .env, and change the content inside the .env files.
+cp .env.example .env
 
-## About Laravel
+# for build and recreate
+docker-compose up --build --force-recreate --no-deps -d
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# for down, it will destroy all container, but the volume still exist
+docker-compose down
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## For Docker Production Image build and push
+```bash
+# 1. docker build Production
+#docker build -f Prod.Dockerfile -t prod/web-api-bff .
+#docker build -f Prod.Dockerfile -t testing/web-api-bff .
+docker build -f Prod.Dockerfile -t web-api-bff .
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# 2. Log on to an instance of Container Registry Enterprise Edition
+docker login --username=[your username] singtao-registry.cn-hongkong.cr.aliyuncs.com
 
-## Learning Laravel
+# 3. Push image to the registry
+docker login --username=[your username] singtao-registry.cn-hongkong.cr.aliyuncs.com
+docker tag [ImageId] singtao-registry.cn-hongkong.cr.aliyuncs.com/testing/web-api-bff:[tag]
+docker push singtao-registry.cn-hongkong.cr.aliyuncs.com/testing/web-api-bff:[tag]
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## For Minikube only
+```bash
+# update the cache 
+minikube cache list
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# delete 
+minikube cache delete {{web-api-bff:1.0}}
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# add
+minikube cache add {{web-api-bff:1.0}}
+```
 
-## Laravel Sponsors
+## For K8S deployment and volume creation
+```bash
+# 1. Create deployment (create pod)
+kubectl apply -f ./k8s/1-deploy.yml
+# 2. Create service
+kubectl apply -f ./k8s/2-service.yml
+# 3. Create ingress
+kubectl apply -f ./k8s/3-ingress.yml
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## For Operation Team
+```bash
+# for update Menu Drawer Table like SW-356
+php artisan db:seed --class=MenuTableSeeder
 
-### Premium Partners
+php artisan db:seed --class=MenuDrawerTableSeeder
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+php artisan db:seed --class=TvMenuTableSeeder
 
-## Contributing
+php artisan db:seed --class=PlusMenuTableSeeder
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# DONT RUN IN PRODUCTION!!!!
+php artisan db:seed --class=TvZoneTableSeeder  
 
-## Code of Conduct
+php artisan db:seed --class=TuesdayRewardSettingsTableSeeder
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

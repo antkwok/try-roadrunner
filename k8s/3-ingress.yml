@@ -1,0 +1,44 @@
+# The ConfigMap MUST be created first for the ingress controller to be able to
+# find it when the Ingress object is created.
+#
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: web-api-bff-cm
+#data:
+#  SCRIPT_FILENAME: "/var/www/public/index.php"
+#---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+#  annotations:
+#    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+#    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+#    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "web-api-bff-cm"
+#    nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+#    nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
+#    nginx.ingress.kubernetes.io/fastcgi_send_timeout: "1800"
+#    nginx.ingress.kubernetes.io/fastcgi_read_timeout: "1800"
+#    nginx.ingress.kubernetes.io/server-snippets: |
+#      location ~ \.php$ {
+#          fastcgi_pass web-api-bff:9000;
+#          fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+#          fastcgi_param SERVER_NAME $host;
+#          include fastcgi_params;
+#      }
+  name: web-api-bff
+#  namespace: www-stheadline-com
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: web-api-bff.c2ea0f6af146048ada9b5bc6a36b5199e.cn-hongkong.alicontainer.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-api-bff-service
+                port:
+#                  name: fastcgi
+                  number: 80

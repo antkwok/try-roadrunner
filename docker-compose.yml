@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  app:
+    image: "temp-web-api-bff:1.0"
+    restart: unless-stopped
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www

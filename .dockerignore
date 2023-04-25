@@ -1,0 +1,10 @@
+.git
+#custom php official image only, no source code
+vendor
+supervisord.log
+supervisord.pid
+laravel-worker.log
+storage/logs/*.log
+rr
+.rr.yaml
+docs

@@ -17,3 +17,9 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+rr
+.rr.yaml
+supervisord.log
+supervisord.pid
+/.env.developer
+laravel-worker.log

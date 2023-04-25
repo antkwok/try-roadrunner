@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: "temp-web-api-bff:1.0"
+    restart: unless-stopped
+    ports:
+      - "8984:8080"
+    environment:
+      - PHP_IDE_CONFIG=serverName=docker-server
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    working_dir: /var/www/
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ./:/var/www
+      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./docker/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+  mongo:
+    image: mongo
+    ports:
+      - "27028:27017"
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+    command: [--auth]
+  redis:
+    image: redis:alpine
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+    volumes:
+      - cache_data:/data
+    ports:
+      - 6579:6379
+volumes:
+  mongodb:
+  mongodb_config:
+  cache_data:

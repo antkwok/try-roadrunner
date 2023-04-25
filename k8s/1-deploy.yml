@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-api-bff
+#  namespace: www-stheadline-com
+spec:
+  selector:
+    matchLabels:
+      app: web-api-bff
+  template:
+    metadata:
+      labels:
+        app: web-api-bff
+    spec:
+      containers:
+        - name: web-api-bff
+          image: singtao-registry-vpc.cn-hongkong.cr.aliyuncs.com/testing/web-api-bff:v1.4.0-beta.1
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: web-api-bff-configmap
+            - secretRef:
+                name: web-api-bff-secret
