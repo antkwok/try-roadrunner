@@ -1,3 +1,4 @@
+FROM ghcr.io/roadrunner-server/roadrunner:2023.1.1 AS roadrunner
 FROM php:8.1-fpm-alpine
 
 # Arguments defined in docker-compose.yml
@@ -122,8 +123,11 @@ RUN apk add --no-progress --quiet --no-cache nginx supervisor
 COPY docker/nginx/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
 
+COPY --from=roadrunner /usr/bin/rr /var/www/rr
+RUN chmod +x /var/www/rr
+
 # Apply the required changes to run nginx as www-data user
-RUN apk add  --no-cache nginx
+RUN apk add --no-cache nginx
 RUN chown -R www-data:www-data /run/nginx /var/lib/nginx /var/log/nginx && \
     sed -i '/user nginx;/d' /etc/nginx/nginx.conf
 # Switch to www-user
