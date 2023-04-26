@@ -16,7 +16,6 @@ FROM php:8.1-fpm-alpine
 #    unzip
 RUN apk update && apk add  --no-cache \
     git \
-    mysql-client \
     curl \
     mc \
     libmcrypt \
@@ -81,14 +80,6 @@ RUN apk add --no-cache $PHPIZE_DEPS \
 # mongodb
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb
-
-# mysql
-RUN docker-php-ext-install pdo_mysql
-
-
-# Install PHP extensions
-#RUN docker-php-ext-install -j5 gd mysqli
-
 
 # Get latest Composer
 #COPY --from=composer:latest /usr/bin/composer /usr/bin/composer \
